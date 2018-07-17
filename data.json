@@ -1,0 +1,13 @@
+{
+  "header": "Back-end courses",
+  "subjects": {
+    "bash": {
+      "questions": ["What is bash?", "How to create a folder?", "How to create a file?"],
+      "answer": ["Bourne-Again SHell", "mkdir", "touch"]
+    },
+    "git": {
+      "questions": ["What is git?", "How to create a branch?", "How to switch to a branch?"],
+      "answer": ["Bourne-Again SHell", "git branch", "git checkout"]
+    }
+  }
+}
