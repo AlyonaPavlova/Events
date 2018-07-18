@@ -4,18 +4,19 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "mustache data.json template.html > build.html"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlyonaPavlova/System.git"
+    "url": "git+https://github.com/AlyonaPavlova/Events.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AlyonaPavlova/System/issues"
+    "url": "https://github.com/AlyonaPavlova/Events/issues"
   },
-  "homepage": "https://github.com/AlyonaPavlova/System#readme",
+  "homepage": "https://github.com/AlyonaPavlova/Events#readme",
   "devDependencies": {
     "eslint": "^5.0.1",
     "mustache": "^2.3.0",

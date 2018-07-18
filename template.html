@@ -4,34 +4,13 @@
     <meta charset="UTF-8">
     <title>Mustache template</title>
     <script type="text/javascript" src="./node_modules/mustache/mustache.js"></script>
-    <script type="text/javascript" src="./template.js"></script>
 </head>
 <body>
-<script id="template" type="text/html">
     <h1>This is a {{header}}</h1>
     <p>This course contains the following subjects: {{subjects}}</p>
-    <p>Subject {{bash}} contains the following questions: {{questions}}</p>
-    <p>Subject {{bash}} contains the following answers: {{answers}}</p>
-</script>
-<script>
-    let a = {
-      header: "Back-end courses",
-      subjects: {
-        bash: {
-          questions: ["What is bash?", "How to create a folder?", "How to create a file?"],
-          answer: ["Bourne-Again SHell", "mkdir", "touch"]
-        },
-        git: {
-          questions: ["What is git?", "How to create a branch?", "How to switch to a branch?"],
-          answer: ["Bourne-Again SHell", "git branch", "git checkout"]
-        }
-      }
-    }
-</script>
-
-<script>
-  let template = document.getElementById("template").innerHTML;
-  console.log(Mustache.to_html(template, data));
-</script>
+    <p>Subject bash contains the following questions: {{#bash}}{{questions}}{{/bash}}</p>
+    <p>Subject bash contains the following answers: {{#bash}}{{answers}}{{/bash}}</p>
+    <p>Subject git contains the following questions: {{#git}}{{questions}}{{/git}}</p>
+    <p>Subject git contains the following answers: {{#git}}{{answers}}{{/git}}</p>
 </body>
 </html>
