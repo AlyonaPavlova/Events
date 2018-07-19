@@ -2,20 +2,35 @@
 
 const fs = require("fs");
 const mustache = require("mustache");
+const async = require("async");
 
-fs.readFile("./data.json", (err, text) => {
-  if (err) throw err;
-  let parse = JSON.parse(text);
+let data = ["./data.json"];
+let dataParse = [];
 
-  fs.readFile("./template.html", (err, template) => {
-    if (err) throw err
-    let string = template.toString();
+async.each(data, (key, callback) => {
+  fs.readFile(key, (err, text) => {
+    if (err) throw err;
+    let parse = JSON.parse(text);
+    dataParse.push(parse);
 
-    let result = mustache.render(string, parse);
+    function callback() {
 
-    fs.writeFile("build2.html", result, (err) => {
-      if (err) throw err;
-    });
+      fs.readFile("./template.html", (err, text) => {
+        if (err) throw err;
+        let template = text.toString();
+
+        let result = mustache.render(template, parse);
+
+        fs.writeFile("./build3.html", result, (err) => {
+          if (err) throw err;
+        });
+      });
+    }
+
+    callback();
   });
 });
+
+
+
 
