@@ -2,35 +2,38 @@
 
 const fs = require("fs");
 const mustache = require("mustache");
+const async = require("async");
 
-const myPromise = new Promise((resolve, reject) => {
-  fs.readFile("./data.json", (err, text) => {
-    if (err) throw err;
-    let parse = JSON.parse(text);
+let list = ["./data.json"];
 
-    fs.readFile("./template.html", (err, template) => {
-      if (err) throw err
-      let temp = template.toString();
+function callback() {
+  let resultData = [];
 
-      resolve(temp, parse);
-    });
-  });
-
-})
-
-myPromise
-  .then(temp => {
-
-  })
-  .then(temp, parse => {
-    let result = mustache.render(temp, parse);
-    return result;
-    })
-  .then(result => {
-    fs.writeFile("build3.html", result, (err) => {
+  list.forEach(key => {
+    fs.readFile(key, (err, text) => {
       if (err) throw err;
+
+      let parse = JSON.parse(text);
+      resultData.push(parse);
+      console.log(parse);
+
+
+      callback(err, parse);
     });
-  })
-  .catch(error => {
-    console.log(error);
   });
+}
+
+Promise.all(list.map(callback))
+  .then(parse => {
+    fs.readFile("./template.html", (err, text) => {
+      if (err) throw err;
+      const template = text.toString();
+
+      const html = mustache.render(template, parse);
+
+      fs.writeFile("./build3.html", html, (err) => {
+        if (err) throw err;
+      });
+    });
+  });
+
