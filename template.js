@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const fs = require("fs");
 const mustache = require("mustache");
@@ -6,34 +6,33 @@ const async = require("async");
 
 let list = ["./data.json"];
 
-function callback() {
-  let resultData = [];
+new Promise((resolve) => {
+  let resultData = {};
 
-  list.forEach(key => {
-    fs.readFile(key, (err, text) => {
-      if (err) throw err;
+  async.forEachOf(list, (key) => {fs.readFile(key, (err, text) => {
+    if (err) throw err;
 
-      let parse = JSON.parse(text);
-      resultData.push(parse);
-      console.log(parse);
+    let parse = JSON.parse(text);
+    resultData[key] = parse;
 
-
-      callback(err, parse);
-    });
-  });
-}
-
-Promise.all(list.map(callback))
+    resolve(parse);
+  })})
+})
   .then(parse => {
-    fs.readFile("./template.html", (err, text) => {
-      if (err) throw err;
-      const template = text.toString();
-
-      const html = mustache.render(template, parse);
-
-      fs.writeFile("./build3.html", html, (err) => {
+    return new Promise(resolve => {
+      fs.readFile("./template.html", (err, text) => {
         if (err) throw err;
+        let template = text.toString();
+
+        resolve(mustache.render(template, parse));
       });
     });
-  });
-
+  })
+  .then(rand => {
+    fs.writeFile("./build4.html", rand, (err) => {
+      if (err) throw err;
+    });
+  })
+  .catch(error => {
+    console.log("Error!");
+  })
