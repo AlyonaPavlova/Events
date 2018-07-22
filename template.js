@@ -2,63 +2,44 @@
 
 const fs = require("fs");
 const async = require("async");
-const promise = require("promise");
 const mustache = require("mustache");
 
 let list = ["./data.json"];
 
 function getData() {
-  let resultData = {};
+    return new Promise((resolve) => {
+        let resultData = {};
 
-  async.forEachOf(list, (key) => {
-    fs.readFile(key, (err, text) => {
-      if (err) throw err;
-      return resultData[key] = JSON.parse(text);
-    });
-  });
-}
+        async.forEachOf(list, (key) => {fs.readFile(key, (err, text) => {
+            if (err) throw err;
 
-function getTemplate() {
-  fs.readFile("./template.html", (err, text) => {
-    if (err) throw err;
-    return text.toString();
-  });
+            let parse = JSON.parse(text);
+            resultData[key] = parse;
+
+            resolve(parse);
+        })})
+    })
 }
 
 async function getFile() {
+    let data = await getData();
+    return new Promise(resolve => {
+        fs.readFile("./template.html", (err, text) => {
+            if (err) throw err;
+            let template = text.toString();
 
-  let results = await Promise.all([getData,getTemplate]);
-
-  let render = mustache.render(results);
-
-  return fs.writeFile("./build5.html", render, (err) => {
-    if (err) throw err;
-  });
+            resolve(mustache.render(template, data));
+        });
+    });
 }
 
-getFile()
-  .catch(err => console.err(err.message));
+async function saveFile() {
+    let render = await getFile();
 
+    return fs.writeFile("./build5.html", render, (err) => {
+        if (err) throw err;
+    });
+}
 
-// async function getFile() {
-//   let resultData = {};
-//
-//   const data = async.forEachOf(list, (key) => {
-//     fs.readFile(key, (err, text) => {
-//       if (err) throw err;
-//       return resultData[key] = JSON.parse(text);
-//     });
-//   });
-//   const render = await fs.readFile("./template.html", (err, text) => {
-//     if (err) throw err;
-//     let template = text.toString();
-//
-//     console.log(data);
-//
-//     return mustache.render(template, data);
-//   });
-//
-//   return fs.writeFile("./build5.html", render, (err) => {
-//     if (err) throw err;
-//   });
-// }
+saveFile()
+    .catch(err => console.log(err.message));
