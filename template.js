@@ -6,7 +6,7 @@ const mustache = require("mustache");
 
 let list = ["./data.json"];
 
-function getData() {
+function readFile() {
     return new Promise((resolve) => {
         let resultData = {};
 
@@ -21,8 +21,7 @@ function getData() {
     })
 }
 
-async function getFile() {
-    let data = await getData();
+function writeFile(data) {
     return new Promise(resolve => {
         fs.readFile("./template.html", (err, text) => {
             if (err) throw err;
@@ -34,7 +33,8 @@ async function getFile() {
 }
 
 async function saveFile() {
-    let render = await getFile();
+    let data = await readFile();
+    let render = await writeFile(data);
 
     return fs.writeFile("./build5.html", render, (err) => {
         if (err) throw err;
