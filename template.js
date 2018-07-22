@@ -27,13 +27,12 @@ function writeFile(data) {
 }
 
 async function saveFile() {
-    return await Promise.all(readFile().forEach(async function(file) {
-        let render = await writeFile(file);
-
-        return fs.writeFile("./build5.html", render, (err) => {
-            if (err) throw err;
-        });
+    let render = await Promise.all(readFile().map(async function(file) {
+        return await writeFile(file);
     }));
+    return fs.writeFile("./build5.html", render, (err) => {
+        if (err) throw err;
+    });
 }
 
 saveFile()
