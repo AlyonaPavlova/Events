@@ -7,11 +7,10 @@ let list = ["./data.json"];
 
 function readFile() {
     return new Promise((resolve) => {
-        let resultData = list.map(file => {fs.readFile(file, (err, text) => {
+        list.map(file => {fs.readFile(file, (err, text) => {
             if (err) throw err;
-            return JSON.parse(text);
+          resolve(JSON.parse(text));
         })});
-        resolve(resultData);
     })
 }
 
@@ -27,9 +26,9 @@ function writeFile(data) {
 }
 
 async function saveFile() {
-    let render = await Promise.all(readFile().map(async function(file) {
-        return await writeFile(file);
-    }));
+    let data = await readFile();
+    let render = await writeFile(data);
+
     return fs.writeFile("./build5.html", render, (err) => {
         if (err) throw err;
     });
