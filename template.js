@@ -5,34 +5,49 @@ const mustache = require("mustache");
 
 let list = ["./data.json"];
 
-function readFile() {
-    return new Promise((resolve) => {
-        list.map(file => {fs.readFile(file, (err, text) => {
-            if (err) throw err;
-          resolve(JSON.parse(text));
-        })});
-    })
+function readFile(path) {
+  return new Promise(resolve => {
+    fs.readFile(path, (err, text) => {
+      if (err) throw err;
+      resolve(text.toString());
+    });
+  });
 }
 
-function writeFile(data) {
-    return new Promise(resolve => {
-        fs.readFile("./template.html", (err, text) => {
-            if (err) throw err;
-            let template = text.toString();
-
-            resolve(mustache.render(template, data));
-        });
-    });
+function writeFile(file, render) {
+  return new Promise(resolve => {
+    resolve(fs.writeFile(file, render, (err) => {
+      if (err) throw err;
+    }));
+  });
 }
 
 async function saveFile() {
-    let data = await readFile();
-    let render = await writeFile(data);
+  let template = await readFile("./template.html");
+  let dataList = await Promise.all(list.map(path => readFile(path)));
+  let data = await dataList.reduce(previousValue => {
+    return previousValue;
+  });
 
-    return fs.writeFile("./build5.html", render, (err) => {
-        if (err) throw err;
-    });
+  return writeFile("./build6.html", mustache.render(template, data));
 }
 
 saveFile()
     .catch(err => console.log(err.message));
+
+
+// function getObj(array) {
+//   return new Promise(resolve => {
+//     resolve(array.reduce(previousValue => {
+//       return previousValue;
+//     }));
+//   });
+// }
+//
+// async function saveFile() {
+//   let template = await readFile("./template.html");
+//   let dataList = await Promise.all(list.map(path => readFile(path)));
+//   let data = await getObj(dataList);
+//
+//   return writeFile("./build6.html", mustache.render(template, data));
+// }
