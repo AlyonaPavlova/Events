@@ -16,38 +16,31 @@ function readFile(path) {
 
 function writeFile(file, render) {
   return new Promise(resolve => {
-    resolve(fs.writeFile(file, render, (err) => {
+    fs.writeFile(file, render, (err) => {
       if (err) throw err;
-    }));
+      resolve();
+    });
   });
+}
+
+function render(data, template) {
+  return new Promise(resolve => {
+    resolve(mustache.render(data, template));
+  })
 }
 
 async function saveFile() {
   let template = await readFile("./template.html");
   let dataList = await Promise.all(list.map(path => readFile(path)));
-  let data = await dataList.reduce(previousValue => {
+  let data = dataList.reduce(previousValue => {
     return previousValue;
   });
 
-  return writeFile("./build6.html", mustache.render(template, data));
+  let render = await render(data, template);
+
+  return writeFile("./build6.html", render);
 }
 
 saveFile()
     .catch(err => console.log(err.message));
 
-
-// function getObj(array) {
-//   return new Promise(resolve => {
-//     resolve(array.reduce(previousValue => {
-//       return previousValue;
-//     }));
-//   });
-// }
-//
-// async function saveFile() {
-//   let template = await readFile("./template.html");
-//   let dataList = await Promise.all(list.map(path => readFile(path)));
-//   let data = await getObj(dataList);
-//
-//   return writeFile("./build6.html", mustache.render(template, data));
-// }
