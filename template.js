@@ -10,7 +10,7 @@ async function saveFile() {
   let dataList = await Promise.all(list.map(path => fsPromises.readFile(path, "utf8")));
   let data = dataList.reduce(previousValue => {return previousValue;});
 
-  await fsPromises.writeFile("./build6.html", mustache.render(template, data));
+  await fsPromises.writeFile("./build6.html", mustache.render(template, JSON.parse(data)));
 }
 
 saveFile()
